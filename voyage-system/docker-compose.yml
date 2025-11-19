@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  voyage-client-backend:
+    build: ./voyage-client-backend
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./voyage-client-backend/.env
+
+  voyage-app-backend:
+    build: ./voyage-app-backend
+    ports:
+      - "8001:8001"
+    env_file:
+      - ./voyage-app-backend/.env
+    volumes:
+      - ./voyage_data:/app/data
+
+  voyage-app:
+    build: ./voyage-app
+    ports:
+      - "3001:3000" # Map internal 3000 to external 3001 to avoid conflict if needed, or just use 3001
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8001
+
+  # voyage-client-app:
+  #   build: ./voyage-client-app
+  #   ports:
+  #     - "19000:19000"
+  #     - "19006:19006"
+  #   # React Native in Docker is tricky for mobile emulation. 
+  #   # This service is commented out as it's best run locally with 'npx expo start'
